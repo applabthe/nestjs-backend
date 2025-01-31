@@ -14,7 +14,7 @@ export default new DataSource({
   type: 'postgres',
   url: process.env.DATABASE_URL
     ? process.env.DATABASE_URL
-    : 'postgresql://postgres:postgres@localhost:5432/nestjscourse',
+    : 'postgresql://postgres:qwer1234@localhost:5432/nestjs_db',
   migrationsRun:
     'string' === typeof process.env.DATABASE_MIGRATIONS_RUN
       ? process.env.DATABASE_MIGRATIONS_RUN === 'true'
@@ -32,4 +32,8 @@ export default new DataSource({
         rejectUnauthorized: false,
       }
     : false,
+  extra: {
+    host: process.env.DATABASE_HOST || 'postgres',
+    port: Number(process.env.DATABASE_PORT) || 5432,
+  },
 });

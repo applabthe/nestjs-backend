@@ -13,23 +13,46 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   app:
     build: .
     container_name: nestjs_app
     restart: always
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     environment:
       DATABASE_URL: "postgresql://postgres:qwer1234@postgres:5432/nestjs_db"
-      JWT_SECRET: "uma_chave_segura"
+      JWT_SECRET: "aa39196428805021e6c6aecbdfff002fab7086a8b7b388092248d950cfb329341ea31bde9664ef378d15b2b06e3fc01d3116cbc40f2ff7d552b0e649e00b3f76"
       PORT: 3000
     ports:
       - "3000:3000"
     command: npm run start:dev
     volumes:
       - .:/app
-      - /app/node_modules
+      - /app/dist
+    working_dir: /app
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: nestjs_pgadmin
+    restart: always
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@email.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
 
 volumes:
   postgres_data:
+  pgadmin_data:

@@ -8,7 +8,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Instala as dependências
-RUN npm install
+RUN yarn install
 
 # Copia o restante do código para dentro do container
 COPY . .
@@ -17,4 +17,4 @@ COPY . .
 EXPOSE 3000
 
 # Comando para rodar a aplicação
-CMD ["npm", "run", "start:dev"]
+CMD ["yarn", "start:dev"]
